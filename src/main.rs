@@ -1,9 +1,18 @@
-#![feature(proc_macro_hygiene, decl_macro)]
+#![feature(proc_macro_hygiene, plugin, const_fn, decl_macro)]
 
 #[macro_use] extern crate rocket;
+extern crate rocket_contrib;
+
 #[macro_use] extern crate diesel;
 
 extern crate dotenv;
+
+extern crate r2d2;
+extern crate r2d2_diesel;
+
+#[macro_use] extern crate serde_derive;
+#[macro_use] extern crate serde_json;
+
 
 use dotenv::dotenv;
 use std::env;
@@ -12,46 +21,20 @@ use diesel::pg::PgConnection;
 
 mod schema;
 mod models;
+mod db;
+mod static_files;
 
 
-#[get("/")]
-fn hello() -> &'static str {
-    "Hello, World!"
-}
-
-fn main() {
+fn rocket() -> rocket::Rocket {
     dotenv().ok();
 
     let database_url = env::var("DATABASE_URL").expect("set DATABASE_URL");
-    let conn = PgConnection::establish(&database_url).unwrap();
 
-    let user1 = models::NewUser {
-        login: String::from("login1"),
-        password_hash: String::from("123"),
-    };
+    let pool = db::init_pool(database_url);
 
-    let user2 = models::NewUser {
-        login: String::from("login2"),
-        password_hash: String::from("456"),
-    };
+    rocket::ignite().mount("/", routes![static_files::all, static_files::index])
+}
 
-    if models::User::insert(user1, &conn) {
-        println!("Insert 1 success");
-    } else {
-        println!("Insert 1 failed");
-    }
-
-    if models::User::insert(user2, &conn) {
-        println!("Insert 2 success");
-    } else {
-        println!("Insert 2 failed");
-    }
-
-    let all_users = models::User::all(&conn);
-    println!("{:?}", all_users);
-
-
-    rocket::ignite()
-        .mount("/", routes![hello])
-        .launch();
+fn main() {
+    rocket().launch();
 }

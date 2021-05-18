@@ -5,15 +5,14 @@ use diesel::pg::PgConnection;
 use crate::schema::users;
 use crate::schema::users::dsl::users as all_users;
 
-#[derive(Debug)]
-#[derive(Queryable)]
+#[derive(Serialize, Queryable, Debug, Clone)]
 pub struct User {
     pub id: i32,
     pub login: String,
     pub password_hash: String,
 }
 
-#[derive(Insertable)]
+#[derive(Serialize, Deserialize, Insertable)]
 #[table_name = "users"]
 pub struct NewUser {
     pub login: String,
