@@ -34,7 +34,7 @@ impl User {
             .expect("Error loading users")
     }
 
-    pub fn update_by_login(id: i32, conn: &PgConnection, user: NewUser) -> bool {
+    pub fn update_by_id(id: i32, conn: &PgConnection, user: NewUser) -> bool {
         use crate::schema::users::dsl::{login as l, password_hash as p};
         let NewUser {
             login,
