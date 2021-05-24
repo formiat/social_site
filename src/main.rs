@@ -16,7 +16,7 @@ extern crate r2d2_diesel;
 
 use dotenv::dotenv;
 use std::env;
-use routes::*;
+use routes::user::*;
 
 mod schema;
 mod models;

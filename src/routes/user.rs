@@ -1,19 +1,19 @@
 use crate::db::Conn as DbConn;
 use rocket_contrib::json::Json;
-use super::models::{User, NewUser};
+use crate::models::user::{User, NewUser};
 use serde_json::Value;
 
-#[get("/users", format = "application/json")]
+#[get("/user", format = "application/json")]
 pub fn index(conn: DbConn) -> Json<Value> {
-    let users = User::all(&conn);
+    let user = User::all(&conn);
 
     Json(json!({
         "status": 200,
-        "result": users,
+        "result": user,
     }))
 }
 
-#[post("/users", format = "application/json", data = "<new_user>")]
+#[post("/user", format = "application/json", data = "<new_user>")]
 pub fn new(conn: DbConn, new_user: Json<NewUser>) -> Json<Value> {
     Json(json!({
         "status": User::insert(new_user.into_inner(), &conn),
@@ -21,7 +21,7 @@ pub fn new(conn: DbConn, new_user: Json<NewUser>) -> Json<Value> {
     }))
 }
 
-#[get("/users/<id>", format = "application/json")]
+#[get("/user/<id>", format = "application/json")]
 pub fn show(conn: DbConn, id: i32) -> Json<Value> {
     let result = User::show(id, &conn);
     let status = if result.is_empty() { 404 } else { 200 };
@@ -32,7 +32,7 @@ pub fn show(conn: DbConn, id: i32) -> Json<Value> {
     }))
 }
 
-#[put("/users/<id>", format = "application/json", data = "<user>")]
+#[put("/user/<id>", format = "application/json", data = "<user>")]
 pub fn update_by_id(conn: DbConn, id: i32, user: Json<NewUser>) -> Json<Value> {
     let status = if User::update_by_id(id, &conn, user.into_inner()) {
         200
@@ -46,7 +46,7 @@ pub fn update_by_id(conn: DbConn, id: i32, user: Json<NewUser>) -> Json<Value> {
     }))
 }
 
-#[delete("/users/<id>")]
+#[delete("/user/<id>")]
 pub fn delete_by_id(conn: DbConn, id: i32) -> Json<Value> {
     let status = if User::delete_by_id(id, &conn) {
         200
