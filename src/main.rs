@@ -21,7 +21,6 @@ use routes::user::*;
 mod schema;
 mod models;
 mod db;
-mod static_files;
 mod routes;
 
 
@@ -35,7 +34,6 @@ fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .manage(pool)
         .mount("/api/v1/", routes![index, new, show, update_by_id, delete_by_id])
-        .mount("/", routes![static_files::all, static_files::index])
 }
 
 fn main() {
