@@ -16,7 +16,7 @@ extern crate r2d2_diesel;
 
 use dotenv::dotenv;
 use std::env;
-use routes::user::*;
+use routes::*;
 
 mod schema;
 mod models;
@@ -33,7 +33,9 @@ fn rocket() -> rocket::Rocket {
 
     rocket::ignite()
         .manage(pool)
-        .mount("/api/v1/", routes![index, new, show, update_by_id, delete_by_id])
+        .mount("/api/v1/", routes![
+            user::index, user::new, user::show, user::update_by_id, user::delete_by_id,
+        ])
 }
 
 fn main() {

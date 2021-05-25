@@ -5,7 +5,7 @@ use diesel::pg::PgConnection;
 use crate::schema::users;
 use crate::schema::users::dsl::users as all_users;
 
-#[derive(Serialize, Queryable, Debug, Clone)]
+#[derive(Serialize, Queryable)]
 pub struct User {
     pub id: i32,
     pub login: String,
@@ -55,12 +55,12 @@ impl User {
     }
 
     pub fn delete_by_id(id: i32, conn: &PgConnection) -> bool {
-        if User::show(id, conn).is_empty() {
-            return false
+        return if User::show(id, conn).is_empty() {
+            false
+        } else {
+            diesel::delete(all_users.find(id))
+                .execute(conn)
+                .is_ok()    
         }
-
-        diesel::delete(all_users.find(id))
-            .execute(conn)
-            .is_ok()
     }
 }
