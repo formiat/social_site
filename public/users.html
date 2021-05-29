@@ -2,13 +2,22 @@
 <html>
 <head>
   <title>User list</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <h1>User list</h1>
-  <ul>
-    <li>User 1</li>
-    <li>User 2</li>
-  </ul>
+  <ul class="user-list"></ul>
+
+  <script>
+    $(document).ready(function () {
+      $.get('/api/v1/user', function (data) {
+        if (data.status && data.status==200) {
+          data.result.forEach(function (item, index) {
+            $('.user-list').append('<li>'+item.login+'</li>');
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>

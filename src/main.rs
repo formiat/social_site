@@ -33,12 +33,12 @@ fn rocket() -> rocket::Rocket {
 
     rocket::ignite()
         .manage(pool)
+        .mount("/", routes![
+            static_files::index, static_files::all,
+        ])
         .mount("/api/v1/", routes![
             user::index, user::new, user::show, user::update_by_id, user::delete_by_id,
             room::index, room::new, room::show, room::update_by_id, room::delete_by_id,
-        ])
-        .mount("/", routes![
-            static_files::index, static_files::all,
         ])
 }
 
