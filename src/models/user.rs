@@ -9,6 +9,7 @@ use crate::schema::users::dsl::users as all_users;
 pub struct User {
     pub id: i32,
     pub login: String,
+    #[serde(skip_serializing)]
     pub password_hash: String,
 }
 
@@ -60,7 +61,7 @@ impl User {
         } else {
             diesel::delete(all_users.find(id))
                 .execute(conn)
-                .is_ok()    
+                .is_ok()
         }
     }
 }
