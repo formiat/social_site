@@ -6,9 +6,18 @@
 </head>
 <body>
   <h1>Room list</h1>
-  <ul>
-    <li>Room 1</li>
-    <li>Room 2</li>
-  </ul>
+  <ul class="room-list"></ul>
+
+  <script>
+    $(document).ready(function () {
+      $.get('/api/v1/room', function (data) {
+        if (data.status && data.status==200) {
+          data.result.forEach(function (item, index) {
+            $('.room-list').append('<li> room.id:'+item.id+' - user1.id:'+item.user_1_id+', user2.id:'+item.user_2_id+'</li>');
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>
