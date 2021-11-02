@@ -1,0 +1,32 @@
+version: "3.1"
+services:
+  postgres:
+    image: postgres:11-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: rocket
+      POSTGRES_USER: rocket
+      POSTGRES_DB: social_site
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    deploy:
+      resources:
+        limits:
+          memory: '512M'
+          cpus: '1'
+  social_site:
+    build: .
+    links:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://rocket:rocket@172.18.0.2:5432/social_site
+    deploy:
+      resources:
+        limits:
+          memory: '1G'
+          cpus: '2'
+    ports:
+      - 8000:8000
